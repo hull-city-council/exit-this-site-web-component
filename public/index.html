@@ -14,8 +14,11 @@
 
   </head>
 
-  <body>
+  <body class="govuk-frontend-supported">
+    <script>document.body.className += ' js-enabled' + ('noModule' in HTMLScriptElement.prototype ? ' govuk-frontend-supported' : '');</script>
     <noscript> You need to enable JavaScript to run this app. </noscript>
-    <main id="main"></main>
+    <main id="main">
+      <exit-this-site url="https://bbc.co.uk/weather"></exit-this-site>
+    </main>
   </body>
 </html>
