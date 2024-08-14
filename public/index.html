@@ -14,8 +14,21 @@
 
   </head>
 
-  <body class="govuk-frontend-supported">
-    <script>document.body.className += ' js-enabled' + ('noModule' in HTMLScriptElement.prototype ? ' govuk-frontend-supported' : '');</script>
+  <body>
+      <nav class="skip-links" aria-label="Skip links" id="skip-links">
+        <ul class="list list--skip-links">
+            <li class="list__item">
+                <a class="list__link" href="#main" rel="nofollow">
+                    Skip to content
+                </a>
+            </li>
+            <li class="list__item">
+                <a class="list__link" href="#js-menu-toggle" rel="nofollow">
+                    Skip to navigation
+                </a>
+            </li>
+        </ul>
+    </nav>
     <noscript> You need to enable JavaScript to run this app. </noscript>
     <main id="main">
       <exit-this-site url="https://bbc.co.uk/weather"></exit-this-site>
