@@ -3,6 +3,13 @@ import Box from "@mui/material/Box";
 import Fab from "@mui/material/Fab";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import Tooltip from "@mui/material/Tooltip";
+import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import Link from '@mui/material/Link';
 import "@fontsource/roboto/300.css";
 import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
@@ -17,30 +24,9 @@ const style = {
   position: "fixed",
 };
 
-function canCreateHistoryState() {
-  try {
-    window.history.pushState(null, null, window.location.href);
-    return true;
-  } catch (error) {
-    if (error instanceof DOMException && error.name === 'SecurityError') {
-      console.error('SecurityError: Unable to create history state due to same-origin policy.');
-    } else {
-      console.error('Error: Unable to create history state.', error);
-    }
-    return false;
-  }
-}
-
 function destroyPage(url) {
   const html = document.querySelector("html");
   html.remove(html);
-  if (canCreateHistoryState()) {
-    window.history.pushState(null, null, window.location.href);
-    window.history.replaceState(null, null, url);
-    window.history.pushState(null, null, url);
-    window.history.replaceState(null, null, url);
-    window.location.replace(url);
-  }
   window.open(url, "_self");
 }
 const LoadExitThisSite = ({ url }) => {
@@ -55,23 +41,54 @@ const LoadExitThisSite = ({ url }) => {
       window.removeEventListener('keydown', handleKeyDown);
     };
   }, [url]);
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = React.useState(true);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
   return (
-    <Box style={style} sx={{ "& > :not(style)": { m: 1 } }}>
-      <Tooltip title="Press to exit this site">
-        <Fab
-          color="error"
-          variant="extended"
-          aria-label="To quickly exit this site, press the Escape key or press this link"
-          sx={{ textTransform: "none" }}
-          onClick={() => destroyPage(url)}
-          href={url}
-        >
-          <ExitToAppIcon sx={{ mr: 1 }} />
-          Exit this site
-        </Fab>
-      </Tooltip>
-    </Box>
+    <>
+      <Box style={style} sx={{ "& > :not(style)": { m: 1 } }}>
+        <Tooltip title="Press to exit this site">
+          <Fab
+            color="error"
+            variant="extended"
+            aria-label="To quickly exit this site, press the Escape key or press this link"
+            sx={{ textTransform: "none" }}
+            onClick={() => destroyPage(url)}
+            href={url}
+          >
+            <ExitToAppIcon sx={{ mr: 1 }} />
+            Exit this site
+          </Fab>
+        </Tooltip>
+      </Box>
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+          {"Important safety information"}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            You can use the exit this page button to leave this site immediately. This won't remove this website from your browsing history. <Link href="#">Learn more about staying safe online</Link>.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button variant="contained" onClick={handleClose} autoFocus>
+            Continue
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </>
   );
 };
 export default LoadExitThisSite;
