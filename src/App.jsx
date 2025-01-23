@@ -32,23 +32,24 @@ function destroyPage(url) {
 const LoadExitThisSite = ({ url }) => {
   useEffect(() => {
     const handleKeyDown = (event) => {
-      if (event.key === 'Escape') {
+      if (event.key === "Escape") {
         destroyPage(url);
       }
     };
-    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener("keydown", handleKeyDown);
     return () => {
-      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener("keydown", handleKeyDown);
     };
   }, [url]);
-  const [open, setOpen] = React.useState(true);
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
+  const [showSafetyDialog, setShowSafetyDialog] = useState(() => {
+    const currentValue = localStorage.getItem("showSafetyDialog");
+    return currentValue === null ? true : JSON.parse(currentValue);
+  });
+  
   const handleClose = () => {
-    setOpen(false);
+    setShowSafetyDialog(false);
+    localStorage.setItem("showSafetyDialog", false);
   };
 
   return (
@@ -68,8 +69,9 @@ const LoadExitThisSite = ({ url }) => {
           </Fab>
         </Tooltip>
       </Box>
+
       <Dialog
-        open={open}
+        open={showSafetyDialog}
         onClose={handleClose}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
