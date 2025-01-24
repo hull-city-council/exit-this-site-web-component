@@ -2,7 +2,7 @@ import React from "react";
 import r2wc from "@r2wc/react-to-web-component";
 import LoadExitThisSite from "./App";
 
-const exitThisSite = r2wc(LoadExitThisSite, { props: { url: "string" } });
+const exitThisSite = r2wc(LoadExitThisSite, { props: { url: "string" }, shadow: "open" });
 const skipLinkList = document.querySelector(".list--skip-links"),
   addToSkipList = document.createElement("li"),
   newLink = document.createElement("a");
