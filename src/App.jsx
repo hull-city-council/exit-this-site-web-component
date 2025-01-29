@@ -1,35 +1,25 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { ThemeProvider, createTheme } from "@mui/material/styles";
-import Box from "@mui/material/Box";
-import Fab from "@mui/material/Fab";
+import {
+  Box,
+  Fab,
+  Tooltip,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle
+} from "@mui/material";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
-import Tooltip from "@mui/material/Tooltip";
-import Button from '@mui/material/Button';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
+import createCache from '@emotion/cache';
+import { CacheProvider } from '@emotion/react';
 import Link from '@mui/material/Link';
 import "@fontsource/roboto/300.css";
 import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
 
-const style = {
-  margin: 0,
-  top: "auto",
-  right: 20,
-  bottom: 20,
-  left: "auto",
-  position: "fixed",
-};
-
-const themeMode = createTheme({
-  palette: {
-    mode: "light"
-  }
-});
 
 function destroyPage(url) {
   const html = document.querySelector("html");
@@ -37,7 +27,43 @@ function destroyPage(url) {
   window.open(url, "_self");
 }
 
-const LoadExitThisSite = ({ url }) => {
+const LoadExitThisSite = ({ url, container }) => {
+
+  const shadowRootElement = document.createElement("div");
+  container.appendChild(shadowRootElement);
+
+  const style = {
+    margin: 0,
+    top: "auto",
+    right: 20,
+    bottom: 20,
+    left: "auto",
+    position: "fixed",
+  };
+
+  const shadowTheme = createTheme({
+    palette: {
+      mode: "light"
+    },
+    components: {
+      MuiPopover: {
+        defaultProps: {
+          container: shadowRootElement
+        }
+      },
+      MuiPopper: {
+        defaultProps: {
+          container: shadowRootElement
+        }
+      },
+      MuiModal: {
+        defaultProps: {
+          container: shadowRootElement
+        }
+      }
+    }
+  });
+
   useEffect(() => {
     const handleKeyDown = (event) => {
       if (event.key === "Escape") {
@@ -60,46 +86,55 @@ const LoadExitThisSite = ({ url }) => {
     localStorage.setItem("showSafetyDialog", false);
   };
 
+  const cache = useMemo(() => createCache({ container, key: "css", prepend: true }), [container])
+
   return (
     <>
-      <ThemeProvider theme={themeMode}>
-        <Box style={style} sx={{ "& > :not(style)": { m: 1 } }}>
-          <Tooltip title="Press to exit this site">
-            <Fab
-              color="error"
-              variant="extended"
-              aria-label="To quickly exit this site, press the Escape key or press this link"
-              sx={{ textTransform: "none" }}
-              onClick={() => destroyPage(url)}
-              href={url}
+      <CacheProvider value={cache}>
+        <ThemeProvider theme={shadowTheme}>
+          <Box style={style} sx={{ "& > :not(style)": { m: 1 } }} id="button-box">
+            <Tooltip title="Press to exit this site"
+                slotProps={{
+                  container: document.getElementById("button-box")
+                }}
+            
             >
-              <ExitToAppIcon sx={{ mr: 1 }} />
-              Exit this site
-            </Fab>
-          </Tooltip>
-        </Box>
+              <Fab
+                color="error"
+                variant="extended"
+                aria-label="To quickly exit this site, press the Escape key or press this link"
+                sx={{ textTransform: "none" }}
+                onClick={() => destroyPage(url)}
+                href={url}
+              >
+                <ExitToAppIcon sx={{ mr: 1 }} />
+                Exit this site
+              </Fab>
+            </Tooltip>
+          </Box>
 
-        <Dialog
-          open={showSafetyDialog}
-          onClose={handleClose}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-        >
-          <DialogTitle id="alert-dialog-title">
-            {"Important safety information"}
-          </DialogTitle>
-          <DialogContent>
-            <DialogContentText id="alert-dialog-description">
-              You can use the exit this page button to leave this site immediately. This won't remove this website from your browsing history. <Link href="#">Learn more about staying safe online</Link>.
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button variant="contained" onClick={handleClose} autoFocus>
-              Continue
-            </Button>
-          </DialogActions>
-        </Dialog>
-      </ThemeProvider>
+          <Dialog
+            open={showSafetyDialog}
+            onClose={handleClose}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+          >
+            <DialogTitle id="alert-dialog-title">
+              {"Important safety information"}
+            </DialogTitle>
+            <DialogContent>
+              <DialogContentText id="alert-dialog-description">
+                You can use the exit this page button to leave this site immediately. This won't remove this website from your browsing history. <Link href="#">Learn more about staying safe online</Link>.
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button variant="contained" onClick={handleClose} autoFocus>
+                Continue
+              </Button>
+            </DialogActions>
+          </Dialog>
+        </ThemeProvider>
+      </CacheProvider>
     </>
   );
 };
