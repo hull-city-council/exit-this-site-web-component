@@ -87,6 +87,7 @@ const LoadExitThisSite = ({ url, container }) => {
   const handleClose = () => {
     if (container.contains(shadowModal)){
       container.removeChild(shadowModal);
+      document.body.style.overflow = "";
     }
     localStorage.setItem("showSafetyDialog", false);
   };
