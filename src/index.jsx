@@ -2,7 +2,7 @@ import r2wc from "@r2wc/react-to-web-component";
 import LoadExitThisSite from "./App";
 
 const exitThisSite = r2wc(LoadExitThisSite, { 
-  shadow: "closed",
+  shadow: "open",
   props: { 
     url: "string" 
   } 

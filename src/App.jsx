@@ -21,16 +21,19 @@ import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
 
 
-function destroyPage(url) {
+const LoadExitThisSite = ({ url, container }) => {
+
+  function destroyPage(url) {
   const html = document.querySelector("html");
   html.remove(html);
   window.open(url, "_self");
 }
 
-const LoadExitThisSite = ({ url, container }) => {
-
   const shadowRootElement = document.createElement("div");
+  const shadowModal = document.createElement("div");
+  shadowModal.setAttribute("id", "modal-alert");
   container.appendChild(shadowRootElement);
+  container.appendChild(shadowModal);
 
   const style = {
     margin: 0,
@@ -58,7 +61,7 @@ const LoadExitThisSite = ({ url, container }) => {
       },
       MuiModal: {
         defaultProps: {
-          container: shadowRootElement
+          container: shadowModal
         }
       }
     }
@@ -76,13 +79,15 @@ const LoadExitThisSite = ({ url, container }) => {
     };
   }, [url]);
 
-  const [showSafetyDialog, setShowSafetyDialog] = useState(() => {
+  const [showSafetyDialog] = useState(() => {
     const currentValue = localStorage.getItem("showSafetyDialog");
     return currentValue === null ? true : JSON.parse(currentValue);
   });
 
   const handleClose = () => {
-    setShowSafetyDialog(false);
+    if (container.contains(shadowModal)){
+      container.removeChild(shadowModal);
+    }
     localStorage.setItem("showSafetyDialog", false);
   };
 
@@ -118,6 +123,7 @@ const LoadExitThisSite = ({ url, container }) => {
             onClose={handleClose}
             aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description"
+            
           >
             <DialogTitle id="alert-dialog-title">
               {"Important safety information"}
