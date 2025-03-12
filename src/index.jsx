@@ -4,7 +4,8 @@ import LoadExitThisSite from "./App";
 const exitThisSite = r2wc(LoadExitThisSite, { 
   shadow: "open",
   props: { 
-    url: "string" 
+    url: "string",
+    info_url: "string",
   } 
 });
 const skipLinkList = document.querySelector(".list--skip-links"),

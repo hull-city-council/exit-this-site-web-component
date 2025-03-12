@@ -21,7 +21,7 @@ import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
 
 
-const LoadExitThisSite = ({ url, container }) => {
+const LoadExitThisSite = ({ url, info_url, container }) => {
 
   function destroyPage(url) {
   const html = document.querySelector("html");
@@ -131,7 +131,7 @@ const LoadExitThisSite = ({ url, container }) => {
             </DialogTitle>
             <DialogContent>
               <DialogContentText id="alert-dialog-description">
-                You can use the exit this page button to leave this site immediately. This won't remove this website from your browsing history. <Link href="#">Learn more about staying safe online</Link>.
+                You can use the exit this page button to leave this site immediately. This won't remove this website from your browsing history. <Link href={info_url}>Learn more about staying safe online</Link>.
               </DialogContentText>
             </DialogContent>
             <DialogActions>
